@@ -28,12 +28,8 @@
 
        <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
-
   <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-functions.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-storage.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-firestore.js"></script>
+
 
   <script>
     // Your web app's Firebase configuration
@@ -50,18 +46,37 @@
     firebase.initializeApp(firebaseConfig);
   </script>
 
-    <!-- Unity WebGL Script -->
-    <script>
+   <script>
+   
+   function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+	  
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/TestMiniApp.loader.js";
       var config = {
-        dataUrl: buildUrl + "/TestMiniApp.data",
-        frameworkUrl: buildUrl + "/TestMiniApp.framework.js",
-        codeUrl: buildUrl + "/TestMiniApp.wasm",
+        dataUrl: buildUrl + "/TestMiniApp.data.unityweb",
+        frameworkUrl: buildUrl + "/TestMiniApp.framework.js.unityweb",
+        codeUrl: buildUrl + "/TestMiniApp.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "TestMiniApp",
         productName: "TestMiniApp",
         productVersion: "1.0",
+        showBanner: unityShowBanner,
       };
 
       var container = document.querySelector("#unity-container");
@@ -83,18 +98,18 @@
         canvas.style.height = "600px";
       }
       loadingBar.style.display = "block";
-
+	  loadingBar.style.display = "none";
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
+          //progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
 
           // This is needed to make the Unity Firebase WebGL Library work properly
           this.unityInstance = unityInstance;
 
-          loadingBar.style.display = "none";
+          //loadingBar.style.display = "none";
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
           };
