@@ -1,123 +1,134 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>TestMiniApp</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-mobile-warning">
-        WebGL builds are not supported on mobile devices.
-      </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">TestMiniApp</div>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>TestMiniApp</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <!-- Отключаем автоматический зум при фокусе на InputField -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+  <div id="unity-container" class="unity-desktop">
+    <canvas id="unity-canvas"></canvas>
+    <div id="unity-loading-bar">
+      <div id="unity-logo"></div>
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
       </div>
     </div>
+    <div id="unity-mobile-warning">
+      WebGL builds are not supported on mobile devices.
+    </div>
+    <div id="unity-footer">
+      <div id="unity-webgl-logo"></div>
+      <div id="unity-fullscreen-button"></div>
+      <div id="unity-build-title">TestMiniApp</div>
+    </div>
+  </div>
 
-       <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
 
-
   <script>
-    // Your web app's Firebase configuration
+    // Firebase configuration
     var firebaseConfig = {
       apiKey: "AIzaSyDLeeySV8ayX0-HQt05yOtPyck4YProH2E",
-  authDomain: "testminiapp-d7ff1.firebaseapp.com",
-  databaseURL: "https://testminiapp-d7ff1-default-rtdb.firebaseio.com",
-  projectId: "testminiapp-d7ff1",
-  storageBucket: "testminiapp-d7ff1.firebasestorage.app",
-  messagingSenderId: "263134158897",
-  appId: "1:263134158897:web:226902a0e83f871c3c3510"
+      authDomain: "testminiapp-d7ff1.firebaseapp.com",
+      databaseURL: "https://testminiapp-d7ff1-default-rtdb.firebaseio.com",
+      projectId: "testminiapp-d7ff1",
+      storageBucket: "testminiapp-d7ff1.firebasestorage.app",
+      messagingSenderId: "263134158897",
+      appId: "1:263134158897:web:226902a0e83f871c3c3510"
     };
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
   </script>
 
-   <script>
-   
-   function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
+  <!-- JavaScript для контроля зума на InputField -->
+  <script>
+    document.addEventListener("focusin", function (event) {
+      if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA") {
+        document.body.style.zoom = 1.0; // можно заменить на другой уровень, если нужно
       }
-	  
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/TestMiniApp.loader.js";
-      var config = {
-        dataUrl: buildUrl + "/TestMiniApp.data.unityweb",
-        frameworkUrl: buildUrl + "/TestMiniApp.framework.js.unityweb",
-        codeUrl: buildUrl + "/TestMiniApp.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "TestMiniApp",
-        productName: "TestMiniApp",
-        productVersion: "1.0",
-        showBanner: unityShowBanner,
-      };
+    });
 
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-      var mobileWarning = document.querySelector("#unity-mobile-warning");
+    document.addEventListener("focusout", function (event) {
+      if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA") {
+        document.body.style.zoom = 1.0; // восстанавливаем масштаб
+      }
+    });
+  </script>
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        container.className = "unity-mobile";
-        config.devicePixelRatio = 1;
-        mobileWarning.style.display = "block";
-        setTimeout(() => {
-          mobileWarning.style.display = "none";
+  <script>
+    function unityShowBanner(msg, type) {
+      function updateBannerVisibility() {
+        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+      }
+      var div = document.createElement('div');
+      div.innerHTML = msg;
+      warningBanner.appendChild(div);
+      if (type == 'error') div.style = 'background: red; padding: 10px;';
+      else {
+        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+        setTimeout(function() {
+          warningBanner.removeChild(div);
+          updateBannerVisibility();
         }, 5000);
-      } else {
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
       }
-      loadingBar.style.display = "block";
-	  loadingBar.style.display = "none";
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          //progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
+      updateBannerVisibility();
+    }
 
-          // This is needed to make the Unity Firebase WebGL Library work properly
-          this.unityInstance = unityInstance;
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/TestMiniApp.loader.js";
+    var config = {
+      dataUrl: buildUrl + "/TestMiniApp.data.unityweb",
+      frameworkUrl: buildUrl + "/TestMiniApp.framework.js.unityweb",
+      codeUrl: buildUrl + "/TestMiniApp.wasm.unityweb",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "TestMiniApp",
+      productName: "TestMiniApp",
+      productVersion: "1.0",
+      showBanner: unityShowBanner,
+    };
 
-          //loadingBar.style.display = "none";
-          fullscreenButton.onclick = () => {
-            unityInstance.SetFullscreen(1);
-          };
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
-    </script>
-  </body>
+    var container = document.querySelector("#unity-container");
+    var canvas = document.querySelector("#unity-canvas");
+    var loadingBar = document.querySelector("#unity-loading-bar");
+    var progressBarFull = document.querySelector("#unity-progress-bar-full");
+    var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+    var mobileWarning = document.querySelector("#unity-mobile-warning");
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      container.className = "unity-mobile";
+      config.devicePixelRatio = 1;
+      mobileWarning.style.display = "block";
+      setTimeout(() => {
+        mobileWarning.style.display = "none";
+      }, 5000);
+    } else {
+      canvas.style.width = "960px";
+      canvas.style.height = "600px";
+    }
+    loadingBar.style.display = "block";
+    loadingBar.style.display = "none";
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        // progressBarFull.style.width = 100 * progress + "%";
+      }).then((unityInstance) => {
+        this.unityInstance = unityInstance;
+        fullscreenButton.onclick = () => {
+          unityInstance.SetFullscreen(1);
+        };
+      }).catch((message) => {
+        alert(message);
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+</body>
 </html>
