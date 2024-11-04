@@ -6,8 +6,8 @@
   <title>TestMiniApp</title>
   <link rel="shortcut icon" href="TemplateData/favicon.ico">
   <link rel="stylesheet" href="TemplateData/style.css">
-  <!-- Отключаем автоматический зум при фокусе на InputField -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- Отключение автоматического зума, но разрешаем зумировать при масштабировании страницы -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 </head>
 <body>
   <div id="unity-container" class="unity-desktop">
@@ -51,13 +51,15 @@
   <script>
     document.addEventListener("focusin", function (event) {
       if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA") {
-        document.body.style.zoom = 1.0; // можно заменить на другой уровень, если нужно
+        // Устанавливаем body в фиксированное положение, чтобы экран не сдвигался
+        document.body.style.position = "fixed";
       }
     });
 
     document.addEventListener("focusout", function (event) {
       if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA") {
-        document.body.style.zoom = 1.0; // восстанавливаем масштаб
+        // Сбрасываем фиксированное положение после завершения ввода
+        document.body.style.position = "";
       }
     });
   </script>
@@ -101,24 +103,17 @@
     var fullscreenButton = document.querySelector("#unity-fullscreen-button");
     var mobileWarning = document.querySelector("#unity-mobile-warning");
 
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      container.className = "unity-mobile";
-      config.devicePixelRatio = 1;
-      mobileWarning.style.display = "block";
-      setTimeout(() => {
-        mobileWarning.style.display = "none";
-      }, 5000);
-    } else {
-      canvas.style.width = "960px";
-      canvas.style.height = "600px";
-    }
+    // Настройка канваса для повышения качества
+    canvas.width = window.innerWidth * window.devicePixelRatio;
+    canvas.height = window.innerHeight * window.devicePixelRatio;
+
     loadingBar.style.display = "block";
     loadingBar.style.display = "none";
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
       createUnityInstance(canvas, config, (progress) => {
-        // progressBarFull.style.width = 100 * progress + "%";
+        progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         this.unityInstance = unityInstance;
         fullscreenButton.onclick = () => {
