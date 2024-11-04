@@ -66,8 +66,8 @@
 
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
-      //var loadingBar = document.querySelector("#unity-loading-bar");
-      //var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var fullscreenButton = document.querySelector("#unity-fullscreen-button");
       var mobileWarning = document.querySelector("#unity-mobile-warning");
 
@@ -82,19 +82,19 @@
         canvas.style.width = "960px";
         canvas.style.height = "600px";
       }
-      //loadingBar.style.display = "block";
+      loadingBar.style.display = "block";
 
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-          //progressBarFull.style.width = 100 * progress + "%";
+          progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
 
           // This is needed to make the Unity Firebase WebGL Library work properly
           this.unityInstance = unityInstance;
 
-          //loadingBar.style.display = "none";
+          loadingBar.style.display = "none";
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
           };
