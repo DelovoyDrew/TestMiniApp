@@ -6,91 +6,6 @@
     <title>TestMiniApp</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-
-    <style>
-      /* Стили для экрана и загрузочной полосы */
-      canvas:focus {
-        outline: none;
-      }
-      html, body {
-        padding: 0;
-        margin: 0;
-        overflow: hidden;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        user-select: none;
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-        height: 100%;
-        background-position-x: 50%;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-attachment: fixed;
-      }
-
-      #unity-canvas {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-      }
-      .loading_bg {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-        background-position-x: 50%;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-attachment: fixed;
-      }
-      .loading {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-      }
-      .loading_bar {
-        position: relative;
-        width: 70%;
-        height: 10px;
-        background-color: #ddd;
-        margin: 20px auto;
-        border-radius: 5px;
-        overflow: hidden;
-      }
-      .loading_bar_fill {
-        width: 0%;
-        height: 100%;
-        background-color: #00dc15;
-        transition: width 0.2s;
-      }
-      .loading_logo {
-        width: 100px;
-        height: 100px;
-        background: url('logo.png') no-repeat center;
-        background-size: contain;
-        margin: 20px auto;
-      }
-      .spinner {
-        width: 50px;
-        height: 50px;
-        border: 5px solid #FFF;
-        border-bottom-color: transparent;
-        border-radius: 50%;
-        box-shadow: 0px 0px 0px 7px rgba(34, 60, 80, 0.2);
-        animation: spinner-spin 1.1s infinite linear;
-        margin: 20px auto;
-      }
-      @keyframes spinner-spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-
-      /* Скрытие логотипа Unity и кнопки на весь экран */
-      #unity-webgl-logo, #unity-fullscreen-button {
-        display: none !important;
-      }
-    </style>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -107,67 +22,33 @@
       <div id="unity-footer">
         <div id="unity-webgl-logo"></div>
         <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title"> </div>
+        <div id="unity-build-title">TestMiniApp</div>
       </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
+       <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-database.js"></script>
 
-    <script>
-      // Firebase конфигурация
-      var firebaseConfig = {
-        apiKey: "AIzaSyDLeeySV8ayX0-HQt05yOtPyck4YProH2E",
-        authDomain: "testminiapp-d7ff1.firebaseapp.com",
-        databaseURL: "https://testminiapp-d7ff1-default-rtdb.firebaseio.com",
-        projectId: "testminiapp-d7ff1",
-        storageBucket: "testminiapp-d7ff1.firebasestorage.app",
-        messagingSenderId: "263134158897",
-        appId: "1:263134158897:web:226902a0e83f871c3c3510"
-      };
-      firebase.initializeApp(firebaseConfig);
-    </script>
 
-    <script>
-      // Функция фиксации разрешения
-      function lock(object, aspectRatio) {
-        if (window.innerWidth / window.innerHeight > aspectRatio) {
-          object.style.width = window.innerHeight * aspectRatio + "px";
-          object.style.height = "100vh";
-        } else {
-          object.style.width = "100vw";
-          object.style.height = window.innerWidth / aspectRatio + "px";
-        }
-        object.style.margin = "auto";
-        object.style.top = "0";
-        object.style.left = "0";
-        object.style.bottom = "0";
-        object.style.right = "0";
-      }
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyDLeeySV8ayX0-HQt05yOtPyck4YProH2E",
+  authDomain: "testminiapp-d7ff1.firebaseapp.com",
+  databaseURL: "https://testminiapp-d7ff1-default-rtdb.firebaseio.com",
+  projectId: "testminiapp-d7ff1",
+  storageBucket: "testminiapp-d7ff1.firebasestorage.app",
+  messagingSenderId: "263134158897",
+  appId: "1:263134158897:web:226902a0e83f871c3c3510"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
 
-      function Update() {
-        lock(document.getElementById("unity-canvas"), 1080 / 1920);
-        const isPortrait = window.innerWidth < window.innerHeight;
-        const loading = document.querySelector('.loading');
-        const spinner = document.querySelector('.spinner');
-
-        if (isPortrait) {
-          lock(loading, 9 / 16);
-          spinner.style.width = "16%";
-          spinner.style.height = "9%";
-        } else {
-          lock(loading, 16 / 9);
-          spinner.style.width = "7.9%";
-          spinner.style.height = "14%";
-        }
-      }
-
-      // Обновление при изменении размера экрана
-      window.addEventListener("resize", Update);
-      window.onload = Update;
-
-      function unityShowBanner(msg, type) {
+   <script>
+   
+   function unityShowBanner(msg, type) {
         function updateBannerVisibility() {
           warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
         }
@@ -184,7 +65,7 @@
         }
         updateBannerVisibility();
       }
-
+	  
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/TestMiniApp.loader.js";
       var config = {
@@ -207,7 +88,7 @@
 
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         container.className = "unity-mobile";
-        config.devicePixelRatio = 1;
+        config.devicePixelRatio = 2;
         mobileWarning.style.display = "block";
         setTimeout(() => {
           mobileWarning.style.display = "none";
@@ -216,16 +97,19 @@
         canvas.style.width = "960px";
         canvas.style.height = "600px";
       }
-
       loadingBar.style.display = "block";
-      loadingBar.style.display = "none";
+	  loadingBar.style.display = "none";
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
+          //progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
+
+          // This is needed to make the Unity Firebase WebGL Library work properly
           this.unityInstance = unityInstance;
+
+          //loadingBar.style.display = "none";
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
           };
